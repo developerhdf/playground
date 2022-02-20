@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"net/http"
 
-	"example/richard/sovtech/repository"
-	"example/richard/sovtech/repository/swapi"
+	"example/richard/sovtech/pkg/repositories"
+	"example/richard/sovtech/pkg/repositories/swapi"
 )
 
-func printData(repo repository.PeopleRepository) {
+func printData(repo repositories.PeopleRepository) {
 	result, err := repo.GetPeople(context.Background(), 1)
 	fmt.Printf("%v %s\n", result, err)
 	result, err = repo.SearchPeople(context.Background(), "luke", 1)

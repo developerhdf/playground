@@ -8,8 +8,8 @@ import (
 	"net/url"
 	"strconv"
 
-	"example/richard/sovtech/model"
-	"example/richard/sovtech/repository"
+	"example/richard/sovtech/pkg/models"
+	"example/richard/sovtech/pkg/repositories"
 )
 
 const (
@@ -34,7 +34,7 @@ func NewPeopleRepository(client *http.Client) *PeopleRepository {
 
 type swapiPeopleResponse struct {
 	Next    *string          `json:"next"`
-	Results []*model.Person `json:"results"`
+	Results []*models.Person `json:"results"`
 }
 
 type swapiPlanetResponse struct {
@@ -84,7 +84,7 @@ func (pr *PeopleRepository) getSwapiPlanetMap(ctx context.Context) {
 	}
 }
 
-func (pr PeopleRepository) populatePeoplePlanetNames(result *repository.PeopleResult) {
+func (pr PeopleRepository) populatePeoplePlanetNames(result *repositories.PeopleResult) {
 	if len(pr.planetMap) > 0 {
 		for _, person := range result.People {
 			if person == nil {
@@ -98,8 +98,8 @@ func (pr PeopleRepository) populatePeoplePlanetNames(result *repository.PeopleRe
 	}
 }
 
-func (pr PeopleRepository) getSwapiPeople(ctx context.Context, fullURI string) (repository.PeopleResult, error) {
-	result := repository.PeopleResult{make([]*model.Person, 0), false}
+func (pr PeopleRepository) getSwapiPeople(ctx context.Context, fullURI string) (repositories.PeopleResult, error) {
+	result := repositories.PeopleResult{make([]*models.Person, 0), false}
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, fullURI, nil)
 	if err != nil {
@@ -131,7 +131,7 @@ func (pr PeopleRepository) getSwapiPeople(ctx context.Context, fullURI string) (
 	return result, nil
 }
 
-func (pr PeopleRepository) GetPeople(ctx context.Context, page int) (repository.PeopleResult, error) {
+func (pr PeopleRepository) GetPeople(ctx context.Context, page int) (repositories.PeopleResult, error) {
 	params := url.Values{}
 	params.Add("page", strconv.Itoa(page))
 	fullURI := fmt.Sprintf("%s?%s", peopleBaseURI, params.Encode())
@@ -139,7 +139,7 @@ func (pr PeopleRepository) GetPeople(ctx context.Context, page int) (repository.
 	return pr.getSwapiPeople(ctx, fullURI)
 }
 
-func (pr PeopleRepository) SearchPeople(ctx context.Context, name string, page int) (repository.PeopleResult, error) {
+func (pr PeopleRepository) SearchPeople(ctx context.Context, name string, page int) (repositories.PeopleResult, error) {
 	params := url.Values{}
 	params.Add("page", strconv.Itoa(page))
 	params.Add("search", name)

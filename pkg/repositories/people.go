@@ -1,14 +1,14 @@
-package repository
+package repositories
 
 import (
 	"context"
 	"encoding/json"
 
-	"example/richard/sovtech/model"
+	"example/richard/sovtech/pkg/models"
 )
 
 type PeopleResult struct {
-	People  []*model.Person `json:"people"`
+	People  []*models.Person `json:"people"`
 	HasMore bool             `json:"hasMore"`
 }
 
