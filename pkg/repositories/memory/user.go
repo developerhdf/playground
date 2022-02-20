@@ -1,9 +1,11 @@
 package memory
 
 import (
+	"errors"
+	"sync"
+
 	"example/richard/sovtech/pkg/models"
 	"example/richard/sovtech/pkg/util/auth"
-	"example/richard/sovtech/pkg/util/auth/jwt"
 )
 
 const (
@@ -23,7 +25,6 @@ func NewUserRepository() *UserRepository {
 
 func (ur *UserRepository) Create(user *models.User) error {
 	var err error
-	token := ""
 	ur.createMu.Lock()
 	defer ur.createMu.Unlock()
 	switch {
@@ -33,7 +34,7 @@ func (ur *UserRepository) Create(user *models.User) error {
 		if _, found := ur.userStore[user.Email]; !found {
 			if passwordHash, err := auth.PasswordHash(user.Password); err == nil {
 				user.Password = passwordHash
-				userStore[user.Email] = user
+				ur.userStore[user.Email] = user
 			}
 		} else {
 			err = errors.New("user exists")
@@ -41,7 +42,7 @@ func (ur *UserRepository) Create(user *models.User) error {
 	default:
 		err = errors.New("max supported users reached")
 	}
-	return token, err
+	return err
 }
 
 func (ur *UserRepository) GetUser(username string) (*models.User, error) {
@@ -63,5 +64,5 @@ func (ur *UserRepository) GetPasswordHash(username string) (string, error) {
 	} else {
 		err = errors.New("user not found")
 	}
-	return user, err
+	return passwordHash, err
 }

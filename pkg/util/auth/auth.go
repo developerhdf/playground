@@ -6,13 +6,14 @@ import (
 
 	"example/richard/sovtech/pkg/models"
 
-        "golang.org/x/crypto/bcrypt"
+	"golang.org/x/crypto/bcrypt"
 )
 
 var ctxUserKey = "user"
 
 func PasswordHash(password string) (string, error) {
-	return bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaulCost)
+	pwdHash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	return string(pwdHash), err
 }
 
 func ValidPassword(password, hashedPassword string) error {
@@ -31,7 +32,7 @@ func GetUserFromRequestContext(r *http.Request) *models.User {
 	var user *models.User
 	if r != nil {
 		ctx := r.Context()
-		if ctxUser, ok := ctx.Value(ctxUserKey); ok {
+		if ctxUser := ctx.Value(ctxUserKey); ctxUser != nil {
 			if modelUser, isModelUser := ctxUser.(*models.User); isModelUser {
 				user = modelUser
 			}

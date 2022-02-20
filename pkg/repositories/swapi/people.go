@@ -9,7 +9,6 @@ import (
 	"strconv"
 
 	"example/richard/sovtech/pkg/models"
-	"example/richard/sovtech/pkg/repositories"
 )
 
 const (
@@ -84,7 +83,7 @@ func (pr *PeopleRepository) getSwapiPlanetMap(ctx context.Context) {
 	}
 }
 
-func (pr PeopleRepository) populatePeoplePlanetNames(result *repositories.PeopleResult) {
+func (pr PeopleRepository) populatePeoplePlanetNames(result *models.PeopleResult) {
 	if len(pr.planetMap) > 0 {
 		for _, person := range result.People {
 			if person == nil {
@@ -98,8 +97,8 @@ func (pr PeopleRepository) populatePeoplePlanetNames(result *repositories.People
 	}
 }
 
-func (pr PeopleRepository) getSwapiPeople(ctx context.Context, fullURI string) (repositories.PeopleResult, error) {
-	result := repositories.PeopleResult{make([]*models.Person, 0), false}
+func (pr PeopleRepository) getSwapiPeople(ctx context.Context, fullURI string) (*models.PeopleResult, error) {
+	result := &models.PeopleResult{make([]*models.Person, 0), false}
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, fullURI, nil)
 	if err != nil {
@@ -127,11 +126,11 @@ func (pr PeopleRepository) getSwapiPeople(ctx context.Context, fullURI string) (
 		result.HasMore = true
 	}
 
-	pr.populatePeoplePlanetNames(&result)
+	pr.populatePeoplePlanetNames(result)
 	return result, nil
 }
 
-func (pr PeopleRepository) GetPeople(ctx context.Context, page int) (repositories.PeopleResult, error) {
+func (pr PeopleRepository) GetPeople(ctx context.Context, page int) (*models.PeopleResult, error) {
 	params := url.Values{}
 	params.Add("page", strconv.Itoa(page))
 	fullURI := fmt.Sprintf("%s?%s", peopleBaseURI, params.Encode())
@@ -139,7 +138,7 @@ func (pr PeopleRepository) GetPeople(ctx context.Context, page int) (repositorie
 	return pr.getSwapiPeople(ctx, fullURI)
 }
 
-func (pr PeopleRepository) SearchPeople(ctx context.Context, name string, page int) (repositories.PeopleResult, error) {
+func (pr PeopleRepository) SearchPeople(ctx context.Context, name string, page int) (*models.PeopleResult, error) {
 	params := url.Values{}
 	params.Add("page", strconv.Itoa(page))
 	params.Add("search", name)

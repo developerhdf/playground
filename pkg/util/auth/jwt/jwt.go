@@ -1,6 +1,9 @@
 package jwt
 
 import (
+	"errors"
+	"time"
+
 	"github.com/golang-jwt/jwt"
 )
 
@@ -23,7 +26,7 @@ func CreateToken(user string) (string, error) {
 
 func GetTokenUsername(token string) (string, error) {
 	parser := new(jwt.Parser)
-	jwtToken, err := parser.Parse(jwtToken, keyFunc)
+	jwtToken, err := parser.Parse(token, keyFunc)
 	if err != nil {
 		return "", err
 	}

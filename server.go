@@ -1,24 +1,29 @@
 package main
 
 import (
-	"context"
-	"fmt"
+	"example/richard/sovtech/graph"
+	"example/richard/sovtech/graph/generated"
+	"log"
 	"net/http"
+	"os"
 
-	"example/richard/sovtech/pkg/repositories"
-	"example/richard/sovtech/pkg/repositories/swapi"
+	"github.com/99designs/gqlgen/graphql/handler"
+	"github.com/99designs/gqlgen/graphql/playground"
 )
 
-func printData(repo repositories.PeopleRepository) {
-	result, err := repo.GetPeople(context.Background(), 1)
-	fmt.Printf("%v %s\n", result, err)
-	result, err = repo.SearchPeople(context.Background(), "luke", 1)
-	fmt.Printf("%v %s\n", result, err)
-	result, err = repo.SearchPeople(context.Background(), "darth", 1)
-	fmt.Printf("%v %s\n", result, err)
-}
+const defaultPort = "8080"
 
 func main() {
-	repo := swapi.NewPeopleRepository(&http.Client{})
-	printData(repo)
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = defaultPort
+	}
+
+	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: graph.NewSovTechResolver()}))
+
+	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
+	http.Handle("/query", srv)
+
+	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
+	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
