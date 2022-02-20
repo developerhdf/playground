@@ -30,12 +30,12 @@ input RefreshTokenInput{
 }
 
 input NewUser {
-  username: String!
+  email: String!
   password: String!
 }
 
 input Login {
-  username: String!
+  email: String!
   password: String!
 }
 

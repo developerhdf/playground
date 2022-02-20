@@ -321,12 +321,12 @@ input RefreshTokenInput{
 }
 
 input NewUser {
-  username: String!
+  email: String!
   password: String!
 }
 
 input Login {
-  username: String!
+  email: String!
   password: String!
 }
 
@@ -2198,11 +2198,11 @@ func (ec *executionContext) unmarshalInputLogin(ctx context.Context, obj interfa
 
 	for k, v := range asMap {
 		switch k {
-		case "username":
+		case "email":
 			var err error
 
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("username"))
-			it.Username, err = ec.unmarshalNString2string(ctx, v)
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("email"))
+			it.Email, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -2229,11 +2229,11 @@ func (ec *executionContext) unmarshalInputNewUser(ctx context.Context, obj inter
 
 	for k, v := range asMap {
 		switch k {
-		case "username":
+		case "email":
 			var err error
 
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("username"))
-			it.Username, err = ec.unmarshalNString2string(ctx, v)
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("email"))
+			it.Email, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}

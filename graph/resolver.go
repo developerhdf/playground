@@ -1,12 +1,15 @@
 package graph
 
 import (
-	"crypto/tls"
-	"net/http"
+	"context"
+	"fmt"
 
+	"example/richard/sovtech/pkg/models"
 	"example/richard/sovtech/pkg/repositories"
-	"example/richard/sovtech/pkg/repositories/memory"
-	"example/richard/sovtech/pkg/repositories/swapi"
+	"example/richard/sovtech/pkg/util/auth"
+	"example/richard/sovtech/pkg/util/auth/jwt"
+
+	"example/richard/sovtech/graph/model"
 )
 
 // This file will not be regenerated automatically.
@@ -18,14 +21,36 @@ type Resolver struct {
 	UserRepo   repositories.UserRepository
 }
 
-func NewSovTechResolver() *Resolver {
-	//at the time of writing this, the swapi certificate had expired
-	tr := &http.Transport{
-		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
-	}
-	httpClient := &http.Client{Transport: tr}
+func NewSovTechResolver(ur repositories.UserRepository, pr repositories.PeopleRepository) *Resolver {
 	return &Resolver{
-		PeopleRepo: swapi.NewPeopleRepository(httpClient),
-		UserRepo:   memory.NewUserRepository(),
+		PeopleRepo: pr,
+		UserRepo:   ur,
 	}
+}
+
+func GetContextUser(ctx context.Context) *models.User {
+	return auth.GetUserFromContext(ctx)
+}
+
+func ToModelsUser(user model.NewUser) *models.User {
+	return models.NewUser(user.Email, user.Password)
+}
+
+func GetJWTToken(user *models.User) (string, error) {
+	if user == nil {
+		return "", fmt.Errorf("user is nil")
+	}
+	return jwt.CreateToken(user.Email)
+}
+
+func CreateToken(username string) (string, error) {
+	return jwt.CreateToken(username)
+}
+
+func GetTokenUsername(token string) (string, error) {
+	return jwt.GetTokenUsername(token)
+}
+
+func ValidPassword(password, hash string) bool {
+	return auth.ValidPassword(password, hash) == nil
 }

@@ -21,19 +21,20 @@ func CreateToken(user string) (string, error) {
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	return token.SignedString(Secret)
-
 }
 
 func GetTokenUsername(token string) (string, error) {
+	user := ""
+	var tokenErr error
 	parser := new(jwt.Parser)
-	jwtToken, err := parser.Parse(token, keyFunc)
-	if err != nil {
-		return "", err
-	}
-	if claims, ok := jwtToken.Claims.(jwt.StandardClaims); ok && jwtToken.Valid {
-		user := claims.Issuer
-		return user, nil
+	if jwtToken, err := parser.ParseWithClaims(token, &jwt.StandardClaims{}, keyFunc); err == nil {
+		if claims, ok := jwtToken.Claims.(*jwt.StandardClaims); ok && jwtToken.Valid {
+			user = claims.Issuer
+		} else {
+			tokenErr = errors.New("invalid token")
+		}
 	} else {
-		return "", errors.New("invalid token")
+		tokenErr = err
 	}
+	return user, tokenErr
 }
