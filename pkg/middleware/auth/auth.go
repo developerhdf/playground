@@ -1,5 +1,9 @@
 package auth
 
+import (
+	"net/http"
+)
+
 type AuthMiddleware interface {
-	Authenticate(handler http.HandlerFunc) http.HandlerFunc
+	Authenticate(handler http.Handler) http.Handler
 }

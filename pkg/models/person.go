@@ -19,3 +19,16 @@ func (p Person) String() string {
 	}
 	return personString
 }
+
+type PeopleResult struct {
+	People  []*Person `json:"people"`
+	HasMore bool      `json:"hasMore"`
+}
+
+func (p PeopleResult) String() string {
+	resultString := "{}"
+	if jsonResult, err := json.Marshal(p); err == nil {
+		resultString = string(jsonResult)
+	}
+	return resultString
+}

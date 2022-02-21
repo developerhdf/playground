@@ -5,7 +5,7 @@ import (
 )
 
 type UserRepository interface {
-	Create(user *models.User) (string, error)
+	Create(user *models.User) error
 	GetUser(username string) (*models.User, error)
 	GetPasswordHash(username string) (string, error)
 }
