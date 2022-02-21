@@ -33,8 +33,9 @@ func (ur *UserRepository) Create(user *models.User) error {
 	case len(ur.userStore) < MaxUsers:
 		if _, found := ur.userStore[user.Email]; !found {
 			if passwordHash, err := auth.PasswordHash(user.Password); err == nil {
-				user.Password = passwordHash
-				ur.userStore[user.Email] = user
+                                userCopy := *user
+				userCopy.Password = passwordHash
+				ur.userStore[user.Email] = &userCopy
 			}
 		} else {
 			err = errors.New("user exists")

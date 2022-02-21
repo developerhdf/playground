@@ -29,3 +29,9 @@ mutation {login(input:{email:"user@swapitest.com", password:"newSwapiPwd"})}
 ```
 mutation {refreshToken(input:{token:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NDU0MDc3NzMsImlzcyI6InVzZXJAc3dhcGl0ZXN0LmNvbSJ9.SobxF-8EIGZtm-LL4xCVMxtfgEo2GaVJ9BzihdpQdJs"})}
 ```
+## Unit Test Example
+Only a single unit test file was added with very limited tests.
+```
+cd pkg/repositories/memory/
+go test
+```
