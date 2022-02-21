@@ -39,18 +39,18 @@ func TestGetUser(t *testing.T) {
 	if firstErr != nil {
 		t.Fatalf(`expected creation success for user %+v`, firstUser)
 	}
-        secondUser, secondErr := testUserRepo.GetUser("c@b.c")
-        if secondErr != nil {
+	secondUser, secondErr := testUserRepo.GetUser("c@b.c")
+	if secondErr != nil {
 		t.Fatalf(`expected retrieval success, go %s`, secondErr)
-        }
-        if firstUser.Email != secondUser.Email {
-            t.Fatalf(`not the same user: %s != %s`, firstUser.Email, secondUser.Email)
-        }
-        if firstUser.Password == secondUser.Password {
-            t.Fatalf(`password was not hashed: %s == %s`, firstUser.Password, secondUser.Password)
-        }
-        firstUser.Email = "newemail@test.com"
-        if firstUser.Email == secondUser.Email {
-            t.Fatalf(`user not immutable: %s == %s`, firstUser.Email, secondUser.Email)
-        }
+	}
+	if firstUser.Email != secondUser.Email {
+		t.Fatalf(`not the same user: %s != %s`, firstUser.Email, secondUser.Email)
+	}
+	if firstUser.Password == secondUser.Password {
+		t.Fatalf(`password was not hashed: %s == %s`, firstUser.Password, secondUser.Password)
+	}
+	firstUser.Email = "newemail@test.com"
+	if firstUser.Email == secondUser.Email {
+		t.Fatalf(`user not immutable: %s == %s`, firstUser.Email, secondUser.Email)
+	}
 }
